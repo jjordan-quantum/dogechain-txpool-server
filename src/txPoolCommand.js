@@ -98,7 +98,7 @@ exports.TxPool = (function() {
 
         transactions.forEach((tx) => {
             if(!knownTransactions.includes(tx.hash)) {
-                _transactions.push(tx);
+                _transactions.push(tx.hash);
                 knownTransactions.push(tx.hash);
             }
         })
