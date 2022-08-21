@@ -37,7 +37,7 @@ exports.TxPool = (function() {
 
                     tokens.forEach((token) => {
                         if(token.startsWith('0x')) {
-                            console.log(token);
+                            //console.log(token);
 
                             if(!transactions.includes(token)) {
                                 transactions.push(token);
