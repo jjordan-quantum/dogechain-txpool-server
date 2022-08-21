@@ -10,20 +10,20 @@ exports.TxPool = (function() {
     async function subscribe() {
         const ls = spawn("dogechain", ["txpool", "subscribe", process.env.GRPC_URL || '127.0.0.1:9632']);
 
-        ls.stdout.on("data", data => {
+        ls.stdout.on("data", function (data) {
             //console.log(`stdout: ${data}`);
             getHashes(data);
         });
 
-        ls.stderr.on("data", data => {
+        ls.stderr.on("data", function (data) {
             console.log(`stderr: ${data}`);
         });
 
-        ls.on('error', (error) => {
+        ls.on('error', function (error) {
             console.log(`error: ${error.message}`);
         });
 
-        ls.on("close", code => {
+        ls.on("close", function(code) {
             console.log(`child process exited with code ${code}`);
             setTimeout(subscribe, process.env.RECONNECT_TIMEOUT ? parseInt(process.env.RECONNECT_TIMEOUT) : 500);
         });
@@ -34,15 +34,15 @@ exports.TxPool = (function() {
             const dataStr = `${data}`;
             const lines = dataStr.split('\n');
 
-            lines.forEach((line) => {
+            lines.forEach(function (line) {
                 if(line.toLowerCase().startsWith('hash')) {
                     const tokens = line.split(' ');
 
-                    tokens.forEach((token) => {
+                    tokens.forEach(function (token) {
                         if(token.startsWith('0x')) {
                             //console.log(token);
 
-                            if(!transactions.map((tx) => { return tx.hash; }).includes(token)) {
+                            if(!transactions.map(function (tx) { return tx.hash; }).includes(token)) {
                                 transactions.push({hash: token, timestamp: Date.now()});
                             }
                         }
@@ -63,7 +63,7 @@ exports.TxPool = (function() {
         busy = true;
         const keepTransactions = [];
 
-        transactions.forEach((tx) => {
+        transactions.forEach(function (tx) {
            if(tx.timestamp > lastPruning && !knownTransactions.includes(tx.hash))  {
                keepTransactions.push(tx);
            }
@@ -89,14 +89,14 @@ exports.TxPool = (function() {
         }
     })();
 
-    const getNewTransactions = () => {
+    function getNewTransactions() {
         if(busy) {
             return [];
         }
 
         const _transactions = [];
 
-        transactions.forEach((tx) => {
+        transactions.forEach(function (tx) {
             if(!knownTransactions.includes(tx.hash)) {
                 _transactions.push(tx.hash);
                 knownTransactions.push(tx.hash);
