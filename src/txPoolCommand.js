@@ -30,7 +30,13 @@ function getHashes(data) {
 
         lines.forEach((line) => {
             if(line.toLowerCase().startsWith('hash')) {
-                console.log(line);
+                const tokens = line.split(' ');
+
+                tokens.forEach((token) => {
+                   if(token.startsWith('0x')) {
+                       console.log(token);
+                   }
+                });
             }
         })
     }
